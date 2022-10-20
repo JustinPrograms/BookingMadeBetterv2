@@ -36,14 +36,17 @@ void User::welcome() {
 	case 1:
 		// Clears console
 		std::cout << "\x1B[2J\x1B[H";
+		//runs login function
 		loginInfo();
 		break;
 	case 2:
 		std::cout << "\x1B[2J\x1B[H";
+		//runs sign up function
 		signup();
 		break;
 	default:
 		std::cout << "\x1B[2J\x1B[H";
+		//any other choice reruns the welcome function
 		welcome();
 	}
 }
@@ -80,6 +83,7 @@ void User::signup() {
 			std::cout << "That username is taken" << std::endl;
 			signup();
 		}
+		//if email is taken, user is informed
 		if (data[i]["email"] == email) {
 			std::cout << "\x1B[2J\x1B[";
 			std::cout << "\u001b[31m";
@@ -89,7 +93,7 @@ void User::signup() {
 
 	}
 
-	// Adding data
+	// Adding data 
 	id = data.size() + 1000;
 	data[data.size()] = { {"username", username},
 				{"password", password},
@@ -154,7 +158,9 @@ void User::login(std::string tempUsername, std::string tempPassword) {
 	}
 	// If login fails restart
 	if (!isLoggedIn) {
+		//informs user that login has failed
 		std::cout << "Incorrect login information. Please try again" << std::endl;
+		//reruns the login portal
 		loginInfo();
 	}
 }
@@ -180,22 +186,27 @@ void User::portal() {
 	// Switch statement for input 
 	switch (in) {
 	case 1:
+		//calls study room function if user enters 1
 		std::cout << "\x1B[2J\x1B[";
 		studyRooms();
 		break;
 	case 2:
+		//calls chromebook checkout if user enters 2
 		std::cout << "\x1B[2J\x1B[";
 		chromebookCheckout();
 		break;
 	case 3:
+		//calls chromebook checkin if user enters 3
 		std::cout << "\x1B[2J\x1B[";
 		chromebookCheckin();
 		break;
 	case 4:
+		//Signs the user out if user enters 4
 		std::cout << "\x1B[2J\x1B[";
 		loginInfo();
 		break;
 	default:
+		//takes user to the welcome page if any other input is entered
 		std::cout << "\x1B[2J\x1B[";
 		welcome();
 	}
@@ -212,6 +223,7 @@ void User::chromebookCheckout() {
 	// Checks if chromebook is already checked out by person
 	for (auto& i : data) {
 		if (i["whoHas"] == id) {
+			//informs user that they already have a chrome book checked out and sends them back to the portal screen
 			std::cout << "\x1B[2J\x1B[";
 			std::cout << "\u001b[31m";
 			std::cout << "You already have a chromebook checked out. " << std::endl;
@@ -223,6 +235,7 @@ void User::chromebookCheckout() {
 	std::cout << "Here are the chromebooks that are available:  " << std::endl;
 	for (auto& i : data) {
 		if (i["isAvailable"] == true) {
+			//if the chrome book is available, user is informed
 			std::cout << "Chromebook #" << i["serial"] << " is available."
 				<< std::endl;
 		}
@@ -236,7 +249,8 @@ void User::chromebookCheckout() {
 	if (!data[in - 1]["isAvailable"]) {
 		std::cout << "\u001b[31m";
 		std::cout << "\x1B[2J\x1B[";
-		std::cout << "That chrome is not available. Please select a different "
+		//if requested chromebook is not available, user is informed and sends them  back to the chromebook checkout page
+		std::cout << "That chrome book is not available. Please select a different "
 			"chromebook.";
 		chromebookCheckout();
 	}
@@ -280,6 +294,7 @@ void User::chromebookCheckin() {
 	if (!has) {
 		std::cout << "\u001b[31m";
 		std::cout << "\x1B[2J\x1B[";
+		//informs user that they do not have any chromebooks checked out
 		std::cout << "You do not have any chromebooks checked out." << std::endl;
 		portal();
 	}
@@ -351,7 +366,8 @@ void User::studyRooms() {
 	std::cout << "Enter the time you want the room (08:00am to 03:00pm): ";
 	std::cin >> time;
 
-	// Converts time to 24 hour clock because easier
+	// Converts time to 24 hour clock for easier computation
+	//check for a because standard time can be entered in am
 	if (time[5] == 'a') {
 		if (time[0] == '0') {
 			timeStart = static_cast<int>(time[1]) - 48;
@@ -361,6 +377,7 @@ void User::studyRooms() {
 		}
 	}
 
+	//check for pm because standard time can be entered in pm
 	if (time[5] == 'p') {
 		if (time[0] == '0') {
 			timeStart = static_cast<int>(time[1]) - 48 + 12;
@@ -374,12 +391,15 @@ void User::studyRooms() {
 	std::cin >> max;
 
 	// Validating request
+	//checking if the time the user wants the room for is less than 0 hours or more than 3 hours
 	if (max > 3 || max < 0) {
 		std::cout << "\x1B[2J\x1B[";
 		std::cout << "\u001b[31m";
+		//if the requested time is invalid, the user is asked to start again with a valid time
 		std::cout << "Invalid time please start over";
 		studyRooms();
 	}
+	//time end is decided based on how many hours they want the room for
 	timeEnd = timeStart + max;
 
 	// Checking if person already has one booking
@@ -387,6 +407,7 @@ void User::studyRooms() {
 		if (i["bookedBy"] == id) {
 			std::cout << "\u001b[31m";
 			std::cout << "\x1B[2J\x1B[";
+			//user is informed
 			std::cout << "You already have a booking." << std::endl;
 			portal();
 		}
