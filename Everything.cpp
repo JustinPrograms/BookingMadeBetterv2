@@ -159,6 +159,10 @@ void User::portal() {
 		std::cout << "\x1B[2J\x1B[";
 		chromebookCheckin();
 		break;
+	case 4:
+		std::cout << "\x1B[2J\x1B[";
+		loginInfo();
+		break;
 	default:
 		std::cout << "\x1B[2J\x1B[";
 		welcome();
