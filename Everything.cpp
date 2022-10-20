@@ -58,6 +58,16 @@ void User::signup() {
 	std::ifstream o(R"(D:\Programing\BookingMadeBetter\data\accounts.json)");
 	json data = json::parse(o);
 
+	for (int i = 0; i < data.size(); i++) {
+		if (data[i]["username"] == username) {
+			std::cout << "\x1B[2J\x1B[";
+			std::cout << "\u001b[31m";
+			std::cout << "That username is taken" << std::endl;
+			signup();
+		}
+
+	}
+
 	// Adding data
 	id = data.size() + 1000;
 	data[data.size()] = { {"username", username},
@@ -122,8 +132,6 @@ void User::login(std::string tempUsername, std::string tempPassword) {
 	}
 	// If login fails restart
 	if (!isLoggedIn) {
-		std::cout << "\x1B[2J\x1B[";
-		std::cout << "\u001b[31m";
 		std::cout << "Incorrect login information. Please try again" << std::endl;
 		loginInfo();
 	}
