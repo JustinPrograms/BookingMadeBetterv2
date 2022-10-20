@@ -18,6 +18,7 @@
 */
 
 
+// User class
 class User {
 
 private:
@@ -33,18 +34,16 @@ private:
 
 
 public:
-	// Init variablies
+	// Init public variablies
 	int in;
 	std::string inStr;
-
-	// Creating room variables
 	std::string room;
 	std::string time;
 	double timeStart;
 	double timeEnd;
 	double max;
 
-	// Init functions
+	// Init private functions
 	void welcome();
 	void signup();
 	void loginInfo();
@@ -57,6 +56,7 @@ public:
 	void studyRooms();
 };
 
+// Constructor & destructor 
 // User();
 // virtual  ~ User();
 

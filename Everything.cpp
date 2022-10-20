@@ -2,6 +2,18 @@
 #include "json.h"
 #include <fstream>
 
+// Ansi codes
+/*
+#define clear "\x1B[2J\x1B["
+#define red "\u001b[31m"
+#define cyan "\u001b[36m"
+#define green "\u001b[32m";
+#define magenta "\u001b[35m"
+#define yellow "\u001b[33m";
+*/
+
+// namespace
+
 using json = nlohmann::json;
 
 void User::welcome() {
@@ -18,9 +30,11 @@ void User::welcome() {
 
 	// Getting input and selecting function
 	std::cin >> in;
+	// Setting new color 
 	std::cout << "\u001b[32m";
 	switch (in) {
 	case 1:
+		// Clears console
 		std::cout << "\x1B[2J\x1B[H";
 		loginInfo();
 		break;
@@ -58,8 +72,15 @@ void User::signup() {
 	std::ifstream o(R"(D:\Programing\BookingMadeBetter\data\accounts.json)");
 	json data = json::parse(o);
 
+	// Checks if username or email is alr taken
 	for (int i = 0; i < data.size(); i++) {
 		if (data[i]["username"] == username) {
+			std::cout << "\x1B[2J\x1B[";
+			std::cout << "\u001b[31m";
+			std::cout << "That username is taken" << std::endl;
+			signup();
+		}
+		if (data[i]["email"] == email) {
 			std::cout << "\x1B[2J\x1B[";
 			std::cout << "\u001b[31m";
 			std::cout << "That username is taken" << std::endl;
@@ -87,6 +108,7 @@ void User::signup() {
 
 void User::loginInfo() {
 
+	// Setting color
 	std::cout << "\u001b[32m";
 	// Login prompt
 	std::cout << "______________________________\n";
@@ -138,6 +160,7 @@ void User::login(std::string tempUsername, std::string tempPassword) {
 }
 
 void User::portal() {
+	// Reseting in variable (program ignore next cin line w/ out)
 	int in;
 
 	std::cout << "\u001b[36m";
@@ -148,12 +171,13 @@ void User::portal() {
 	std::cout << "|        1. Study Room       |\n";
 	std::cout << "|   2. Chromebooks Checkout  |\n";
 	std::cout << "|    3. Chromebooks Checkin  |\n";
+	std::cout << "|          4. Logout         |\n";
 	std::cout << "|                            |\n";
 	std::cout << "------------------------------\n";
 
 	std::cin >> in;
 
-	// Switch statement
+	// Switch statement for input 
 	switch (in) {
 	case 1:
 		std::cout << "\x1B[2J\x1B[";
@@ -178,6 +202,7 @@ void User::portal() {
 }
 
 void User::chromebookCheckout() {
+	// Setting new color
 	std::cout << "\u001b[31m";
 
 	// Reading Json file
@@ -215,7 +240,7 @@ void User::chromebookCheckout() {
 			"chromebook.";
 		chromebookCheckout();
 	}
-
+	// Getting more info
 	std::cout << "Please provide a reason for checkout.";
 	std::cin >> inStr;
 
@@ -235,17 +260,18 @@ void User::chromebookCheckout() {
 	std::cout << "\x1B[2J\x1B[";
 	std::cout << "Successfully checked out chromebook #" << data[in - 1]["serial"]
 		<< std::endl;
-
+	// Calling portal funciton again
 	portal();
 }
 
 void User::chromebookCheckin() {
-
+	// Setting color
 	std::cout << "\u001b[33m";
 	// Reading Json file
 	std::ifstream o(R"(D:\Programing\BookingMadeBetter\data\chromebooks.json)");
 	json data = json::parse(o);
 
+	// Validating request 
 	has = false;
 	for (auto& i : data) {
 		if (i["whoHas"] == id)
@@ -257,11 +283,12 @@ void User::chromebookCheckin() {
 		std::cout << "You do not have any chromebooks checked out." << std::endl;
 		portal();
 	}
-
+	// Get input
 	std::cout << "Please enter the serial number of the chromebook you would "
 		"like to return: ";
 	std::cin >> in;
 
+	// Validating request
 	if (data[in - 1]["whoHas"] != id) {
 		std::cout << "\x1B[2J\x1B[";
 		std::cout << "\u001b[31m";
@@ -287,6 +314,7 @@ void User::chromebookCheckin() {
 }
 
 void User::studyRooms() {
+	// Setting color
 	std::cout << "\u001b[35m";
 
 	// Reading Json file
@@ -323,7 +351,7 @@ void User::studyRooms() {
 	std::cout << "Enter the time you want the room (08:00am to 03:00pm): ";
 	std::cin >> time;
 
-	// Converts time to 24 hour clock
+	// Converts time to 24 hour clock because easier
 	if (time[5] == 'a') {
 		if (time[0] == '0') {
 			timeStart = static_cast<int>(time[1]) - 48;
@@ -345,6 +373,7 @@ void User::studyRooms() {
 	std::cout << "Enter how long you want the room for (Max 3 hours): ";
 	std::cin >> max;
 
+	// Validating request
 	if (max > 3 || max < 0) {
 		std::cout << "\x1B[2J\x1B[";
 		std::cout << "\u001b[31m";
@@ -411,6 +440,7 @@ void User::studyRooms() {
 			std::cout << "\nMinimum 2 people per room.\n No food or drinks allowed. " << std::endl;
 			portal();
 		}
+		// If not valid
 		std::cout << "\u001b[31m";
 		std::cout << "\x1B[2J\x1B[";
 		std::cout << "Invalid Time." << std::endl;
